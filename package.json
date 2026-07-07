@@ -1,33 +1,22 @@
 {
-  "name": "nusa-box",
+  "name": "nusabox",
   "version": "1.0.0",
-  "description": "",
-  "scripts": {
-    "dev": "node ./node_modules/vite/bin/vite.js",
-    "build": "node ./node_modules/vite/bin/vite.js build",
-    "preview": "node ./node_modules/vite/bin/vite.js preview"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/mulzahrian/nusa-box.git"
-  },
-  "keywords": [],
-  "author": "mulzahrian@globalnet.lcl",
-  "license": "ISC",
+  "private": true,
   "type": "module",
-  "bugs": {
-    "url": "https://github.com/mulzahrian/nusa-box/issues"
+  "description": "Nusa Box - Sandbox City Builder with Visual Novel elements",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview --host"
   },
-  "homepage": "https://github.com/mulzahrian/nusa-box#readme",
   "dependencies": {
-    "@react-three/drei": "^10.7.7",
-    "@react-three/fiber": "^9.6.1",
-    "@vitejs/plugin-react": "^6.0.3",
-    "localforage": "^1.10.0",
+    "@vitejs/plugin-react": "^4.7.0",
     "react": "^19.2.7",
     "react-dom": "^19.2.7",
-    "three": "^0.185.1",
-    "vite": "^8.1.3",
+    "three": "^0.160.0",
     "zustand": "^5.0.14"
+  },
+  "devDependencies": {
+    "vite": "^5.0.0"
   }
 }

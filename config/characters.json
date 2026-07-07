@@ -1,0 +1,81 @@
+{
+  "characters": {
+    "the_president": {
+      "id": "the_president",
+      "name": "The President",
+      "description": "Presiden - Penjelas Level & Overview",
+      "modelPath": "./model/character/president.glb",
+      "imagePath": "./assets/character/president.png",
+      "role": "guide",
+      "available_on_maps": ["sumatra", "jawa", "kalimantan", "sulawesi", "papua"],
+      "introduction": "Selamat datang, Walikota baru!",
+      "personality": "Ramah, Kurang Kompeten"
+    },
+    "pak_wiwi": {
+      "id": "pak_wiwi",
+      "name": "Pak Wiwi",
+      "description": "Pejabat Tanah - Perbesar Area Grid",
+      "modelPath": "./model/character/pak_wiwi.glb",
+      "imagePath": "./assets/character/pak_wiwi.png",
+      "role": "merchant",
+      "available_on_maps": ["sumatra"],
+      "services": [
+        {
+          "type": "expand_grid",
+          "cost": 50000,
+          "expand_by": 10,
+          "description": "Perbesar grid 10x10 area"
+        }
+      ],
+      "personality": "Ramah, Pragmatis"
+    },
+    "acel": {
+      "id": "acel",
+      "name": "Acel",
+      "description": "Pemuda Licik - Bersihkan Rumah Kumuh",
+      "modelPath": "./model/character/acel.glb",
+      "imagePath": "./assets/character/acel.png",
+      "role": "cleanup",
+      "available_on_maps": ["sumatra"],
+      "services": [
+        {
+          "type": "cleanup_building",
+          "cost": 5000,
+          "benefit": "Tingkatkan happiness 20%",
+          "description": "Bersihkan rumah kumuh default"
+        }
+      ],
+      "personality": "Nakal, Licik"
+    },
+    "amil": {
+      "id": "amil",
+      "name": "Amil",
+      "description": "Warga Kota",
+      "modelPath": "./model/character/amil.glb",
+      "imagePath": "./assets/character/amil.png",
+      "role": "npc",
+      "available_on_maps": ["sumatra"],
+      "personality": "Baik Hati"
+    },
+    "ica": {
+      "id": "ica",
+      "name": "Ica",
+      "description": "Warga Kota",
+      "modelPath": "./model/character/ica.glb",
+      "imagePath": "./assets/character/ica.png",
+      "role": "npc",
+      "available_on_maps": ["sumatra"],
+      "personality": "Ramah"
+    },
+    "adin": {
+      "id": "adin",
+      "name": "Adin",
+      "description": "Warga Kota",
+      "modelPath": "./model/character/adin.glb",
+      "imagePath": "./assets/character/adin.png",
+      "role": "npc",
+      "available_on_maps": ["sumatra"],
+      "personality": "Ceria"
+    }
+  }
+}

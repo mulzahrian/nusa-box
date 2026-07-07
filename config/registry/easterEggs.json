@@ -1,0 +1,174 @@
+[
+  {
+    "_comment": "=== CARA MENAMBAH EASTER EGG BARU ===",
+    "_comment2": "type: 'cheat' | 'click' | 'date' | 'sequence' | 'spawn' | 'time'",
+    "_comment3": "  cheat: ketik kata di chatbox",
+    "_comment4": "  click: klik objek/lokasi tertentu N kali",
+    "_comment5": "  date: muncul otomatis di tanggal tertentu",
+    "_comment6": "  sequence: tekan keyboard sequence (konami code style)",
+    "_comment7": "  spawn: muncul karakter/objek rahasia di map",
+    "_comment8": "  time: trigger berdasarkan waktu (night | day | midnight | dawn) dengan chance 0.0-1.0",
+    "_comment9": "effect: apa yang terjadi saat easter egg aktif"
+  },
+  {
+    "id": "ee_nasi_goreng",
+    "name": "Nasi Goreng Special",
+    "type": "cheat",
+    "trigger": {
+      "keyword": "nasi goreng"
+    },
+    "effect": {
+      "type": "dialog",
+      "character": "the_president",
+      "lines": [
+        "NASI GORENG! Makanan terenak di dunia!",
+        "Sebagai hadiah, terimalah... tidak ada apa-apa.",
+        "Tapi perut kamu pasti sudah kenyang membayangkannya!"
+      ]
+    },
+    "_enabled": true
+  },
+  {
+    "id": "ee_konami",
+    "name": "Konami Code",
+    "type": "sequence",
+    "trigger": {
+      "keys": ["ArrowUp","ArrowUp","ArrowDown","ArrowDown","ArrowLeft","ArrowRight","ArrowLeft","ArrowRight","b","a"]
+    },
+    "effect": {
+      "type": "money",
+      "amount": 999999,
+      "message": "KONAMI CODE! +Rp 999.999!"
+    },
+    "_enabled": true
+  },
+  {
+    "_comment": "Contoh event malam: tambahkan type 'time' dengan trigger.timeOfDay = 'night' dan chance untuk event yang muncul otomatis saat malam."
+  },
+  {
+    "id": "ee_april_mop",
+    "name": "April Mop",
+    "type": "date",
+    "trigger": {
+      "month": 4,
+      "day": 1
+    },
+    "effect": {
+      "type": "dialog",
+      "character": "the_president",
+      "lines": [
+        "Selamat! Kota kamu terpilih sebagai kota terbaik se-Nusantara!",
+        "...",
+        "APRIL MOP! Hahaha! Tertipu ya?",
+        "Tapi serius deh, kota kamu sudah bagus kok!"
+      ]
+    },
+    "_enabled": true
+  },
+  {
+    "id": "ee_ufo_malam",
+    "name": "UFO Malam Hari",
+    "type": "time",
+    "trigger": {
+      "timeOfDay": "night",
+      "chance": 0.3,
+      "comment": "30% chance to spawn at midnight during night"
+    },
+    "effect": {
+      "type": "spawn",
+      "spawnType": "ufo",
+      "message": "👽 UFO terlihat di langit malam!"
+    },
+    "_enabled": true
+  },
+  {
+    "id": "ee_ufo_sumatra",
+    "name": "UFO Rahasia Sumatra",
+    "type": "cheat",
+    "trigger": {
+      "keyword": "panggil ufo"
+    },
+    "effect": {
+      "type": "spawn",
+      "spawnType": "ufo",
+      "message": "👽 UFO muncul di langit!"
+    },
+    "_enabled": true
+  },
+  {
+    "id": "ee_ghost_click",
+    "name": "Hantu Klik",
+    "type": "click",
+    "trigger": {
+      "buildingType": "any",
+      "times": 10,
+      "withinSeconds": 5
+    },
+    "effect": {
+      "type": "spawn",
+      "spawnType": "ghost",
+      "message": "👻 Ada yang mengikutimu!"
+    },
+    "_enabled": false
+  },
+  {
+    "id": "ee_rusa_liar",
+    "name": "Rusa Liar",
+    "type": "cheat",
+    "trigger": {
+      "keyword": "spawn rusa"
+    },
+    "effect": {
+      "type": "spawn",
+      "spawnType": "deer",
+      "count": 5,
+      "message": "🦌 Rusa-rusa muncul di hutan!"
+    },
+    "_enabled": true
+  },
+  {
+    "id": "ee_kemerdekaan",
+    "name": "Hari Kemerdekaan",
+    "type": "date",
+    "trigger": {
+      "month": 8,
+      "day": 17
+    },
+    "effect": {
+      "type": "fireworks",
+      "duration": 10,
+      "message": "🎆 DIRGAHAYU REPUBLIK INDONESIA! 🇮🇩",
+      "dialog": {
+        "character": "the_president",
+        "lines": [
+          "MERDEKA!!!",
+          "17 Agustus! Hari bersejarah bagi kita semua!",
+          "Semoga Nusantara kita selalu jaya!"
+        ]
+      }
+    },
+    "_enabled": true
+  },
+  {
+    "id": "ee_tahun_baru",
+    "name": "Tahun Baru",
+    "type": "date",
+    "trigger": {
+      "month": 1,
+      "day": 1
+    },
+    "effect": {
+      "type": "fireworks",
+      "duration": 8,
+      "message": "🎉 SELAMAT TAHUN BARU!",
+      "dialog": {
+        "character": "the_president",
+        "lines": [
+          "Selamat Tahun Baru!",
+          "Semoga tahun ini kota kita semakin maju!"
+        ]
+      }
+    },
+    "_enabled": true
+  }
+]

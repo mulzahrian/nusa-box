@@ -1,0 +1,48 @@
+[
+  {
+    "_comment": "=== CARA MENAMBAH BANGUNAN BARU ===",
+    "_comment2": "Salin salah satu blok di bawah, ubah id dan field lain, simpan file ini.",
+    "_comment3": "Field wajib: id, name, cost, cat, color, h, size",
+    "_comment4": "cat: road | res | com | ind | util | public | transit | tool | custom",
+    "_comment5": "iconKey: nama icon dari _IC di game.js (atau 'custom' untuk pakai colorBox)",
+    "_comment6": "JANGAN hapus atau ubah bangunan bawaan -- cukup tambahkan di sini"
+  },
+  {
+    "id": "example_stadium",
+    "name": "Stadium",
+    "cost": 5000,
+    "cat": "public",
+    "color": "#44aaff",
+    "accent": "#0055aa",
+    "h": 2.0,
+    "jobs": 50,
+    "happy": 10,
+    "power": 10,
+    "water": 5,
+    "tax": 150,
+    "size": 4,
+    "unlock": "metro",
+    "description": "Stadion olahraga besar. Meningkatkan kebahagiaan warga secara signifikan.",
+    "category": "public",
+    "_enabled": false
+  },
+  {
+    "id": "example_university",
+    "name": "Universitas",
+    "cost": 8000,
+    "cat": "public",
+    "color": "#8833ff",
+    "accent": "#4400aa",
+    "h": 3.0,
+    "jobs": 80,
+    "happy": 8,
+    "edu": 3,
+    "power": 8,
+    "water": 6,
+    "tax": 300,
+    "size": 4,
+    "unlock": "metro",
+    "description": "Pusat pendidikan tinggi. Meningkatkan kualitas SDM kota.",
+    "_enabled": false
+  }
+]

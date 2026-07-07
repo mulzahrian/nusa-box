@@ -1,0 +1,83 @@
+{
+  "maps": {
+    "sumatra": {
+      "id": "sumatra",
+      "name": "Sumatra",
+      "gridSize": 100,
+      "maxGridSize": 200,
+      "description": "Pulau Sumatra - Pantai, Laut, Gurun, Hutan",
+      "biomes": {
+        "beach": { "enabled": true, "intensity": 1.0 },
+        "forest": { "enabled": true, "intensity": 1.0 },
+        "desert": { "enabled": true, "intensity": 0.8 },
+        "ocean": { "enabled": true, "intensity": 1.0 }
+      },
+      "startingPosition": { "gx": 50, "gz": 50 },
+      "startingMoney": 320000,
+      "startingPopulation": 0
+    },
+    "jawa": {
+      "id": "jawa",
+      "name": "Jawa",
+      "gridSize": 100,
+      "maxGridSize": 200,
+      "description": "Pulau Jawa - Hutan, Gunung, Pantai, Laut",
+      "biomes": {
+        "forest": { "enabled": true, "intensity": 1.2 },
+        "mountain": { "enabled": true, "intensity": 0.9 },
+        "beach": { "enabled": true, "intensity": 0.8 },
+        "ocean": { "enabled": true, "intensity": 1.0 }
+      },
+      "startingPosition": { "gx": 50, "gz": 50 },
+      "startingMoney": 350000,
+      "startingPopulation": 0
+    },
+    "kalimantan": {
+      "id": "kalimantan",
+      "name": "Kalimantan",
+      "gridSize": 100,
+      "maxGridSize": 200,
+      "description": "Kalimantan - Hutan Lebat, Pantai, Gurun, Laut",
+      "biomes": {
+        "forest": { "enabled": true, "intensity": 1.5 },
+        "swamp": { "enabled": true, "intensity": 0.8 },
+        "beach": { "enabled": true, "intensity": 0.7 },
+        "desert": { "enabled": true, "intensity": 0.6 }
+      },
+      "startingPosition": { "gx": 50, "gz": 50 },
+      "startingMoney": 300000,
+      "startingPopulation": 0
+    },
+    "sulawesi": {
+      "id": "sulawesi",
+      "name": "Sulawesi",
+      "gridSize": 100,
+      "maxGridSize": 200,
+      "description": "Sulawesi - Pantai, Hutan, Laut",
+      "biomes": {
+        "beach": { "enabled": true, "intensity": 1.3 },
+        "forest": { "enabled": true, "intensity": 1.0 },
+        "ocean": { "enabled": true, "intensity": 1.0 }
+      },
+      "startingPosition": { "gx": 50, "gz": 50 },
+      "startingMoney": 330000,
+      "startingPopulation": 0
+    },
+    "papua": {
+      "id": "papua",
+      "name": "Papua",
+      "gridSize": 100,
+      "maxGridSize": 200,
+      "description": "Papua - Pantai, Hutan, Gunung Tinggi, Salju",
+      "biomes": {
+        "beach": { "enabled": true, "intensity": 1.2 },
+        "forest": { "enabled": true, "intensity": 1.2 },
+        "mountain": { "enabled": true, "intensity": 1.5 },
+        "snow": { "enabled": true, "intensity": 0.8 }
+      },
+      "startingPosition": { "gx": 50, "gz": 50 },
+      "startingMoney": 380000,
+      "startingPopulation": 0
+    }
+  }
+}

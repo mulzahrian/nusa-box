@@ -1,6 +1,28 @@
-import { defineConfig } from 'vite';
-import react from '@vitejs/plugin-react';
+﻿import { defineConfig } from 'vite';
 
 export default defineConfig({
-  plugins: [react()],
+  root: '.',
+  base: './',
+  server: {
+    host: true,
+    port: 5173,
+    open: true
+  },
+  resolve: {
+    alias: {
+      '@': '/src',
+      '@core': '/src/core',
+      '@systems': '/src/systems',
+      '@stores': '/src/stores',
+      '@components': '/src/components',
+      '@pages': '/src/pages',
+      '@data': '/src/data',
+      '@utils': '/src/utils',
+    }
+  },
+  build: {
+    outDir: 'dist',
+    target: 'es2020',
+    sourcemap: true,
+  }
 });

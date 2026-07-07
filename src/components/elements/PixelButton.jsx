@@ -1,19 +1,32 @@
-export default function PixelButton({
-  children,
-  icon,
-  variant = 'primary',
-  size = 'normal',
-  className = '',
-  ...props
-}) {
-  const classes = ['pixel-button', `pixel-button--${variant}`];
-  if (size !== 'normal') classes.push(`pixel-button--${size}`);
-  if (className) classes.push(className);
+/**
+ * PixelButton - Reusable pixel-art styled button element
+ */
+import React from 'react';
+import { getIconSrc } from '@data/icons';
 
+export default function PixelButton({
+  icon,
+  label,
+  onClick,
+  disabled = false,
+  variant = 'default', // 'default' | 'primary' | 'danger' | 'success'
+  size = 'md',
+  className = '',
+}) {
+  const iconSrc = icon ? getIconSrc(icon, 24) : null;
+  
   return (
-    <button className={classes.join(' ')} {...props}>
-      {icon ? <span className="pixel-button__icon">{icon}</span> : null}
-      <span>{children}</span>
+    <button
+      className={`pixel-btn pixel-btn--${variant} pixel-btn--${size} ${disabled ? 'disabled' : ''} ${className}`}
+      onClick={disabled ? undefined : onClick}
+      disabled={disabled}
+    >
+      {iconSrc && (
+        <span className="btn-icon">
+          <img src={iconSrc} width={size === 'sm' ? 16 : 24} height={size === 'sm' ? 16 : 24} alt="" />
+        </span>
+      )}
+      {label && <span className="btn-label">{label}</span>}
     </button>
   );
 }

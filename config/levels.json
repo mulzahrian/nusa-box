@@ -1,0 +1,147 @@
+{
+  "levels": {
+    "sumatra": [
+      {
+        "num": 1,
+        "name": "Memulai Nusabox",
+        "reward": 10000,
+        "character": "the_president",
+        "cutscene": {
+          "dialogues": [
+            "Selamat datang, Walikota baru! Koncet",
+            "Saya Presiden Nusabox yang... tidak becus.",
+            "Mulailah dengan membangun JALAN dan beberapa RUMAH untuk warga.",
+            "Semoga kamu lebih pintar dari saya..."
+          ]
+        },
+        "objectives": [
+          {
+            "type": "roads",
+            "min": 5,
+            "label": "Bangun 5 Jalan"
+          },
+          {
+            "type": "btypes",
+            "btypes": ["res_low", "res_med", "res_high"],
+            "min": 3,
+            "label": "Bangun 3 Rumah"
+          }
+        ]
+      },
+      {
+        "num": 2,
+        "name": "Warga Pertama",
+        "reward": 15000,
+        "character": "the_president",
+        "cutscene": {
+          "dialogues": [
+            "Bagus! Tapi kota ini masih kosong melompong.",
+            "Sekarang tambah rumah lebih banyak dan ajak 50 warga untuk pindah ke sini."
+          ]
+        },
+        "objectives": [
+          {
+            "type": "population",
+            "min": 50,
+            "label": "50 Penduduk"
+          },
+          {
+            "type": "btypes",
+            "btypes": ["res_low", "res_med", "res_high"],
+            "min": 5,
+            "label": "Bangun 5 Rumah"
+          }
+        ]
+      },
+      {
+        "num": 3,
+        "name": "Cahaya Kota",
+        "reward": 20000,
+        "character": "the_president",
+        "cutscene": {
+          "dialogues": [
+            "Lampu di istana saya sering mati...",
+            "Bangunlah PEMBANGKIT LISTRIK agar kota ini tidak gelap gulita."
+          ]
+        },
+        "objectives": [
+          {
+            "type": "btypes",
+            "btypes": ["power_coal", "power_solar", "power_wind"],
+            "min": 1,
+            "label": "Bangun 1 Pembangkit Listrik"
+          },
+          {
+            "type": "population",
+            "min": 100,
+            "label": "100 Penduduk"
+          }
+        ]
+      },
+      {
+        "num": 4,
+        "name": "Air Kehidupan",
+        "reward": 20000,
+        "character": "the_president",
+        "objectives": [
+          {
+            "type": "btype",
+            "btype": "water_pump",
+            "min": 1,
+            "label": "Bangun 1 Water Pump"
+          },
+          {
+            "type": "population",
+            "min": 200,
+            "label": "200 Penduduk"
+          }
+        ]
+      },
+      {
+        "num": 5,
+        "name": "Kota Bahagia",
+        "reward": 25000,
+        "character": "the_president",
+        "objectives": [
+          {
+            "type": "btypes",
+            "btypes": ["park", "com_mall"],
+            "min": 2,
+            "label": "Bangun 2 Taman/Mall"
+          },
+          {
+            "type": "happiness",
+            "min": 50,
+            "label": "Kebahagiaan 50%"
+          },
+          {
+            "type": "population",
+            "min": 300,
+            "label": "300 Penduduk"
+          }
+        ]
+      }
+    ],
+    "jawa": [
+      {
+        "num": 1,
+        "name": "Mulai dari Hutan",
+        "reward": 12000,
+        "character": "the_president",
+        "objectives": [
+          {
+            "type": "roads",
+            "min": 8,
+            "label": "Bangun 8 Jalan"
+          },
+          {
+            "type": "btypes",
+            "btypes": ["res_low", "res_med"],
+            "min": 5,
+            "label": "Bangun 5 Rumah"
+          }
+        ]
+      }
+    ]
+  }
+}

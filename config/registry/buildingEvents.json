@@ -1,0 +1,134 @@
+[
+  {
+    "_comment": "=== CARA MENAMBAH INSIDE BUILDING EVENT ===",
+    "_comment2": "Muncul saat player klik bangunan (enter building view)",
+    "_comment3": "trigger.type: 'always' | 'date' | 'random' | 'level' | 'population'",
+    "_comment4": "trigger.date: { month, day } untuk tanggal spesifik (misal HUT RI)",
+    "_comment5": "trigger.chance: 0.0-1.0 untuk random chance",
+    "_comment6": "action: 'dialog' | 'minigame' | 'reward' | 'mission'",
+    "_comment7": "buildingTypes: array tipe bangunan yang memicu event ini"
+  },
+  {
+    "id": "shop_diskon_ramadan",
+    "name": "Diskon Ramadan!",
+    "description": "Toko sedang berdiskon besar selama Ramadan.",
+    "buildingTypes": ["com_shop", "com_mall"],
+    "trigger": {
+      "type": "date",
+      "month": 3,
+      "dayFrom": 1,
+      "dayTo": 30
+    },
+    "action": "dialog",
+    "character": "pak_wiwi",
+    "dialog": [
+      "Selamat datang! Kami sedang promo Ramadan!",
+      "Diskon 30% untuk semua barang hari ini.",
+      "Silakan belanja, Pak Walikota!"
+    ],
+    "reward": {
+      "money": 2000
+    },
+    "_enabled": true
+  },
+  {
+    "id": "school_lomba",
+    "name": "Lomba Cerdas Cermat",
+    "description": "Ikut lomba dan menangkan hadiah!",
+    "buildingTypes": ["school"],
+    "trigger": {
+      "type": "random",
+      "chance": 0.3
+    },
+    "action": "minigame",
+    "minigameId": "quiz_umum",
+    "_enabled": true
+  },
+  {
+    "id": "hospital_vaksin",
+    "name": "Program Vaksinasi",
+    "description": "Hari vaksinasi gratis di rumah sakit!",
+    "buildingTypes": ["hospital"],
+    "trigger": {
+      "type": "date",
+      "month": 11,
+      "day": 10
+    },
+    "action": "reward",
+    "dialog": [
+      "Hari ini vaksinasi gratis untuk semua warga!",
+      "Kesehatan kota meningkat!"
+    ],
+    "reward": {
+      "happiness": 10,
+      "money": 0
+    },
+    "_enabled": true
+  },
+  {
+    "id": "bank_investasi",
+    "name": "Tawaran Investasi",
+    "description": "Bank menawarkan investasi menggiurkan.",
+    "buildingTypes": ["bank"],
+    "trigger": {
+      "type": "random",
+      "chance": 0.2
+    },
+    "action": "dialog",
+    "character": "pak_wiwi",
+    "dialog": [
+      "Pak Walikota! Ada peluang investasi bagus!",
+      "Mau investasi Rp 10.000 dan dapat Rp 20.000 besok?",
+      "Kami bank terpercaya, dijamin untung!"
+    ],
+    "reward": {
+      "money": 10000,
+      "delayed": true,
+      "delayDays": 1,
+      "delayMoney": 20000
+    },
+    "_enabled": false
+  },
+  {
+    "id": "police_razia",
+    "name": "Razia KTP",
+    "description": "Polisi sedang merazia surat-surat.",
+    "buildingTypes": ["police"],
+    "trigger": {
+      "type": "random",
+      "chance": 0.15
+    },
+    "action": "dialog",
+    "dialog": [
+      "Pak Walikota, kami sedang gelar razia rutin.",
+      "Tidak ada yang perlu dikhawatirkan.",
+      "Tingkat kejahatan menurun bulan ini!"
+    ],
+    "reward": {
+      "happiness": 2
+    },
+    "_enabled": true
+  },
+  {
+    "id": "airport_kedatangan",
+    "name": "Tamu Istimewa",
+    "description": "Ada tokoh penting yang baru tiba di kota!",
+    "buildingTypes": ["airport"],
+    "trigger": {
+      "type": "level",
+      "min": 20
+    },
+    "action": "dialog",
+    "character": "the_president",
+    "dialog": [
+      "Selamat datang di kota yang luar biasa ini!",
+      "Bandara kalian sangat modern!",
+      "Saya akan rekomendasikan kota ini ke seluruh nusantara!"
+    ],
+    "reward": {
+      "money": 30000,
+      "happiness": 5
+    },
+    "_enabled": true
+  }
+]

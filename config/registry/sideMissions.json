@@ -1,0 +1,87 @@
+[
+  {
+    "_comment": "=== CARA MENAMBAH SIDE MISSION BARU ===",
+    "_comment2": "id: unik",
+    "_comment3": "trigger: kondisi agar misi muncul",
+    "_comment4": "  { type:'population', min:500 } -- populasi minimal",
+    "_comment5": "  { type:'building', btype:'hospital' } -- sudah ada bangunan tsb",
+    "_comment6": "  { type:'level', min:5 } -- sudah level 5+",
+    "_comment7": "  { type:'date', month:8, day:17 } -- tanggal tertentu (HUT RI misal)",
+    "_comment8": "objectives: sama dengan format level objectives",
+    "_comment9": "reward: { money, happiness, relationship: {charId, amount} }"
+  },
+  {
+    "id": "side_pasar_malam",
+    "name": "Pasar Malam",
+    "description": "Pak Wiwi ingin mengadakan pasar malam. Siapkan areanya!",
+    "character": "pak_wiwi",
+    "cutscene": {
+      "lines": [
+        "Bos! Saya mau adain pasar malam besar-besaran!",
+        "Tapi saya butuh taman dan beberapa toko dulu...",
+        "Bantu saya ya, nanti saya bagi-bagi keuntungannya!"
+      ]
+    },
+    "trigger": { "type": "population", "min": 300 },
+    "objectives": [
+      { "type": "btypes", "btypes": ["park"], "min": 2, "label": "Bangun 2 Taman" },
+      { "type": "btypes", "btypes": ["com_shop", "com_mall"], "min": 3, "label": "Bangun 3 Toko/Mall" }
+    ],
+    "reward": {
+      "money": 25000,
+      "happiness": 10,
+      "relationship": { "charId": "pak_wiwi", "amount": 20 }
+    },
+    "timeLimit": null,
+    "_enabled": true
+  },
+  {
+    "id": "side_rumah_sakit_darurat",
+    "name": "Rumah Sakit Darurat",
+    "description": "Wabah! Kota butuh rumah sakit segera.",
+    "character": "amil",
+    "cutscene": {
+      "lines": [
+        "Dok! Ada wabah demam berdarah!",
+        "Kita butuh rumah sakit segera!",
+        "Tolong bantu kami, Pak Walikota!"
+      ]
+    },
+    "trigger": { "type": "population", "min": 800 },
+    "objectives": [
+      { "type": "btype", "btype": "hospital", "min": 1, "label": "Bangun 1 Rumah Sakit" }
+    ],
+    "reward": {
+      "money": 15000,
+      "happiness": 15,
+      "relationship": { "charId": "amil", "amount": 25 }
+    },
+    "timeLimit": 120,
+    "_enabled": true
+  },
+  {
+    "id": "side_hut_ri",
+    "name": "Perayaan HUT RI",
+    "description": "17 Agustus! Rayakan kemerdekaan Indonesia.",
+    "character": "the_president",
+    "cutscene": {
+      "lines": [
+        "MERDEKA! Hari ini tanggal 17 Agustus!",
+        "Rakyat menuntut perayaan yang meriah!",
+        "Bangunlah taman dan hiburan untuk rakyat!"
+      ]
+    },
+    "trigger": { "type": "date", "month": 8, "day": 17 },
+    "objectives": [
+      { "type": "btypes", "btypes": ["park", "com_mall"], "min": 3, "label": "Bangun 3 Fasilitas Hiburan" },
+      { "type": "happiness", "min": 70, "label": "Kebahagiaan 70%" }
+    ],
+    "reward": {
+      "money": 50000,
+      "happiness": 20,
+      "relationship": { "charId": "the_president", "amount": 30 }
+    },
+    "timeLimit": null,
+    "_enabled": true
+  }
+]

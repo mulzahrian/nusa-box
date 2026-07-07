@@ -1,0 +1,66 @@
+{
+  "sideMissions": [
+    {
+      "id": "cleanup_slum_area",
+      "name": "Bersihkan Area Kumuh",
+      "description": "Pak Wiwi minta bantu bersihkan area kumuh",
+      "character": "pak_wiwi",
+      "reward": 8000,
+      "triggeredOn": {
+        "mapId": "sumatra",
+        "day": 10,
+        "type": "date"
+      },
+      "objectives": [
+        {
+          "type": "btypes",
+          "btypes": ["res_low", "res_med", "res_high"],
+          "min": 10,
+          "label": "Bangun 10 Rumah di Area Tertentu"
+        }
+      ]
+    },
+    {
+      "id": "visit_acel",
+      "name": "Kunjungi Acel",
+      "description": "Acel ingin berbicara denganmu tentang situasi kota",
+      "character": "acel",
+      "reward": 5000,
+      "triggeredOn": {
+        "mapId": "sumatra",
+        "afterLevel": 2,
+        "type": "condition"
+      },
+      "objectives": [
+        {
+          "type": "dialogue",
+          "label": "Berbicara dengan Acel"
+        }
+      ]
+    },
+    {
+      "id": "festival_event",
+      "name": "Festival Kota",
+      "description": "Rayakan festival tahunan Nusabox",
+      "character": "the_president",
+      "reward": 20000,
+      "triggeredOn": {
+        "mapId": "sumatra",
+        "day": 365,
+        "type": "date"
+      },
+      "objectives": [
+        {
+          "type": "happiness",
+          "min": 70,
+          "label": "Pastikan Kebahagiaan 70%"
+        },
+        {
+          "type": "population",
+          "min": 500,
+          "label": "500+ Penduduk"
+        }
+      ]
+    }
+  ]
+}

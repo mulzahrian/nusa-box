@@ -1,0 +1,56 @@
+{
+  "miniGames": [
+    {
+      "id": "quiz_game",
+      "name": "Quiz Kota",
+      "description": "Jawab kuis tentang kota",
+      "scriptFile": "./minigames/quiz.js",
+      "rewardMoney": 10000,
+      "rewardHappiness": 10,
+      "triggeredBy": {
+        "type": "building",
+        "building": "school",
+        "action": "click"
+      }
+    },
+    {
+      "id": "farming_game",
+      "name": "Farm Simulator",
+      "description": "Simulasi pertanian untuk ketenangan pikiran",
+      "scriptFile": "./minigames/farming.js",
+      "rewardMoney": 5000,
+      "rewardHappiness": 15,
+      "triggeredBy": {
+        "type": "building",
+        "building": "park",
+        "action": "click"
+      }
+    },
+    {
+      "id": "fishing_game",
+      "name": "Memancing",
+      "description": "Pancing di pantai untuk menenangkan diri",
+      "scriptFile": "./minigames/fishing.js",
+      "rewardMoney": 3000,
+      "rewardHappiness": 8,
+      "triggeredBy": {
+        "type": "location",
+        "location": "beach",
+        "action": "double_click"
+      }
+    },
+    {
+      "id": "trading_game",
+      "name": "Permainan Dagang",
+      "description": "Berdagang dengan pedagang lain",
+      "scriptFile": "./minigames/trading.js",
+      "rewardMoney": 20000,
+      "rewardHappiness": 5,
+      "triggeredBy": {
+        "type": "building",
+        "building": "com_mall",
+        "action": "click"
+      }
+    }
+  ]
+}

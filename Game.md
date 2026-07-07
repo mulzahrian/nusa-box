@@ -290,6 +290,6 @@ Split code into reusable classes
 ### Note
 - sebagai developer saya ingin bisa menambahkan level game,side misson,mini game,object,building karakter,easter egg dan lain lain manual sendiri setelah kamu bikin gamenya jadi bikinlah codingan yang mudah saya tampah
 - dan buatlah struktur folder yang sangat rapi sehingga saya mudah maintancenya
-- untuk assets nya semnetara kamu pake dulu model 3 kotak buatan kamu yang ringan tapi ini harus mudah di replace dengan path model 3d saya .glb begitu juga untuk karakter dan gambar gambar lainnya kamu bikin kotak simple saja dulu tapi gampang buat saya replace nya jadi asssets saya tinggal saya ganti saja codingannya dengan path assets saya.
 - dan saya ingin game ini tidak berat tolong sesuaikan codingannya agar game ini ringan
+- buatlah grid game ini lebih procedural, dan bantuknya tidak garis lurus saya gridnya tapi ada bentuk bentuknya juga di beberapa dearah
 

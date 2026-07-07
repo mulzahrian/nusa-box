@@ -1,27 +1,23 @@
-import { useMemo } from 'react';
-import './App.css';
-import Notification from './components/fragments/Notification';
-import MainMenu from './pages/MainMenu';
-import GameplayPage from './pages/GameplayPage';
-import Settings from './pages/Settings';
-import { useGameStore } from './store/gameStore';
+/**
+ * Main App component - routes between pages
+ */
+import React from 'react';
+import useUIStore from '@stores/useUIStore';
+import MainMenu from '@pages/MainMenu/MainMenu';
+import MapSelection from '@pages/MapSelection/MapSelection';
+import GamePage from '@pages/Game/GamePage';
 
-const pages = {
-  menu: <MainMenu />,
-  gameplay: <GameplayPage />,
-  settings: <Settings />,
-};
-
-function App() {
-  const currentPage = useGameStore((state) => state.currentPage);
-  const screen = useMemo(() => pages[currentPage] ?? pages.menu, [currentPage]);
-
-  return (
-    <div className="app-shell">
-      {screen}
-      <Notification />
-    </div>
-  );
+export default function App() {
+  const currentPage = useUIStore(s => s.currentPage);
+  
+  switch (currentPage) {
+    case 'mainMenu':
+      return <MainMenu />;
+    case 'mapSelection':
+      return <MapSelection />;
+    case 'game':
+      return <GamePage />;
+    default:
+      return <MainMenu />;
+  }
 }
-
-export default App;

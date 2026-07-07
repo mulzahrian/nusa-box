@@ -1,0 +1,70 @@
+[
+  {
+    "_comment": "=== CARA MENAMBAH MINIGAME BARU ===",
+    "_comment2": "id: unik, dipakai di level objective { type:'minigame', gameId:'id_ini' }",
+    "_comment3": "trigger: 'manual' (player klik), 'building' (saat masuk gedung), 'level' (saat level tertentu)",
+    "_comment4": "type: 'quiz' | 'puzzle' | 'tap' | 'memory' | 'custom'",
+    "_comment5": "ui: konfigurasi tampilan minigame",
+    "_comment6": "_enabled: false = tidak dipakai"
+  },
+  {
+    "id": "quiz_umum",
+    "name": "Kuis Pengetahuan Umum",
+    "description": "Jawab pertanyaan tentang kota dan Indonesia.",
+    "type": "quiz",
+    "trigger": "building",
+    "triggerBuilding": "school",
+    "rewardMoney": 5000,
+    "rewardHappiness": 5,
+    "timeLimit": 30,
+    "questions": [
+      {
+        "q": "Ibu kota Indonesia adalah?",
+        "options": ["Jakarta", "Bandung", "Surabaya", "Bali"],
+        "answer": 0
+      },
+      {
+        "q": "Berapa jumlah provinsi di Indonesia?",
+        "options": ["34", "38", "32", "36"],
+        "answer": 1
+      },
+      {
+        "q": "Sungai terpanjang di Kalimantan?",
+        "options": ["Sungai Musi", "Sungai Kapuas", "Sungai Mahakam", "Sungai Citarum"],
+        "answer": 1
+      }
+    ],
+    "_enabled": true
+  },
+  {
+    "id": "tap_pemadam",
+    "name": "Padamkan Api!",
+    "description": "Tap lokasi api sebelum habis waktu.",
+    "type": "tap",
+    "trigger": "building",
+    "triggerBuilding": "fire",
+    "rewardMoney": 3000,
+    "rewardHappiness": 3,
+    "timeLimit": 15,
+    "config": {
+      "targets": 10,
+      "missAllowed": 3
+    },
+    "_enabled": false
+  },
+  {
+    "id": "puzzle_jalan",
+    "name": "Susun Jalan",
+    "description": "Susun tile jalan agar terhubung dari A ke B.",
+    "type": "puzzle",
+    "trigger": "level",
+    "triggerLevel": 5,
+    "rewardMoney": 10000,
+    "rewardHappiness": 8,
+    "config": {
+      "gridSize": 5,
+      "maxMoves": 20
+    },
+    "_enabled": false
+  }
+]

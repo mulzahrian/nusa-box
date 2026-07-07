@@ -1,0 +1,43 @@
+[
+  {
+    "_comment": "=== CARA MENAMBAH VEHICLE BARU ===",
+    "_comment2": "type: car | taxi | bus | truck | train | custom",
+    "_comment3": "path: lokasi file GLB dari root project",
+    "_comment4": "rotY: rotasi Y awal model (Math.PI/2 = 90 derajat)",
+    "_comment5": "scale: ukuran kendaraan (1.0 = normal)",
+    "_comment6": "_enabled: false = tidak dipakai, true = aktif"
+  },
+  {
+    "id": "example_bus",
+    "type": "bus",
+    "path": "./model/car/bus.glb",
+    "rotY": 1.5708,
+    "scale": 1.2,
+    "spawnWeight": 1,
+    "description": "Bus kota besar, muncul di kota yang punya halte bus.",
+    "requiresBuilding": "bus_stop",
+    "_enabled": false
+  },
+  {
+    "id": "example_truck",
+    "type": "truck",
+    "path": "./model/car/truck.glb",
+    "rotY": 1.5708,
+    "scale": 1.0,
+    "spawnWeight": 2,
+    "description": "Truk pengiriman, muncul di kota yang punya pabrik.",
+    "requiresBuilding": "ind_factory",
+    "_enabled": false
+  },
+  {
+    "id": "example_ambulance",
+    "type": "car",
+    "path": "./model/car/ambulance.glb",
+    "rotY": 1.5708,
+    "scale": 0.9,
+    "spawnWeight": 1,
+    "description": "Ambulans, muncul di kota yang punya rumah sakit.",
+    "requiresBuilding": "hospital",
+    "_enabled": false
+  }
+]

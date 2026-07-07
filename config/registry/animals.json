@@ -1,0 +1,88 @@
+[
+  {
+    "_comment": "=== CARA MENAMBAH HEWAN BARU ===",
+    "_comment2": "Taruh file GLB hewan di folder: model/animal/",
+    "_comment3": "Lalu tambahkan entry di config/registry/animals.json (file ini)",
+    "_comment4": "type: 'forest' = muncul di hutan | 'desert' = muncul di gurun | 'ocean' = di laut | 'city' = di kota",
+    "_comment5": "scale: ukuran hewan dalam world units (0.35 = sebesar rusa, 0.5 = lebih besar)",
+    "_comment6": "countMax: maksimal jumlah hewan di map",
+    "_comment7": "spawnZone: di mana hewan muncul berdasarkan tipe map",
+    "_comment8": "behaviors: 'wander' = jalan-jalan | 'idle' = diam | 'flee' = kabur saat didekati"
+  },
+  {
+    "id": "deer",
+    "name": "Rusa",
+    "model": "./model/animal/deer.glb",
+    "type": "forest",
+    "scale": 0.35,
+    "countMax": 6,
+    "moneyReward": 200,
+    "behaviors": ["wander", "idle"],
+    "animations": {
+      "walk": "Walk",
+      "eat": "Eat"
+    },
+    "huntable": true,
+    "description": "Rusa liar yang hidup di hutan. Bisa diburu untuk uang.",
+    "_enabled": true,
+    "_note": "Model sudah ada, ID ini dipakai oleh engine — jangan ubah id ini"
+  },
+  {
+    "id": "example_bird",
+    "name": "Burung Cendrawasih",
+    "model": "./model/animal/bird.glb",
+    "type": "forest",
+    "scale": 0.15,
+    "countMax": 10,
+    "moneyReward": 0,
+    "behaviors": ["wander"],
+    "animations": {
+      "fly": "Fly"
+    },
+    "huntable": false,
+    "description": "Burung cantik khas Papua. Muncul di hutan.",
+    "_enabled": false
+  },
+  {
+    "id": "example_komodo",
+    "name": "Komodo",
+    "model": "./model/animal/komodo.glb",
+    "type": "desert",
+    "scale": 0.5,
+    "countMax": 3,
+    "moneyReward": 500,
+    "behaviors": ["wander", "idle"],
+    "animations": {
+      "walk": "Walk"
+    },
+    "huntable": true,
+    "description": "Komodo besar di zona gurun. Berbahaya dan mahal kalau diburu.",
+    "_enabled": false
+  },
+  {
+    "id": "example_dolphin",
+    "name": "Lumba-lumba",
+    "model": "./model/animal/dolphin.glb",
+    "type": "ocean",
+    "scale": 0.4,
+    "countMax": 4,
+    "moneyReward": 0,
+    "behaviors": ["wander"],
+    "description": "Lumba-lumba yang berenang di dekat pantai.",
+    "huntable": false,
+    "_enabled": false
+  },
+  {
+    "id": "example_cat",
+    "name": "Kucing Kampung",
+    "model": "./model/animal/cat.glb",
+    "type": "city",
+    "scale": 0.12,
+    "countMax": 8,
+    "moneyReward": 0,
+    "behaviors": ["wander", "idle"],
+    "description": "Kucing liar yang berkeliaran di kota.",
+    "huntable": false,
+    "_enabled": false
+  }
+]
