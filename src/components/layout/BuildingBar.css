@@ -1,0 +1,100 @@
+.building-bar {
+  position: absolute;
+  left: 18px;
+  right: 18px;
+  bottom: 18px;
+  z-index: 7;
+  padding: 14px;
+  display: grid;
+  gap: 12px;
+  transform: translateY(calc(100% - 64px));
+  transition: transform 0.2s ease;
+}
+
+.building-bar.is-open {
+  transform: translateY(0);
+}
+
+.building-bar__header {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+.building-bar__controls {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.building-bar__header p {
+  margin: 8px 0 0;
+  font-size: 10px;
+  color: #cbe0ff;
+}
+
+.building-bar__tabs {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding-bottom: 4px;
+}
+
+.building-bar__tab,
+.building-card {
+  border: 4px solid #fff8dc;
+  box-shadow: 6px 6px 0 #06111f;
+  background: rgba(255, 248, 220, 0.12);
+  color: #fff8dc;
+}
+
+.building-bar__tab {
+  white-space: nowrap;
+  padding: 10px 12px;
+}
+
+.building-bar__tab.is-active,
+.building-card.is-active {
+  background: #2ec4b6;
+  color: #102039;
+}
+
+.building-bar__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 12px;
+}
+
+.building-card {
+  text-align: left;
+  padding: 14px;
+  display: grid;
+  gap: 10px;
+}
+
+.building-card strong {
+  font-size: 11px;
+}
+
+.building-card span {
+  font-size: 10px;
+}
+
+@media (max-width: 960px) {
+  .building-bar {
+    left: 12px;
+    right: 12px;
+    bottom: 12px;
+  }
+
+  .building-bar__header {
+    flex-direction: column;
+  }
+
+  .building-bar__controls {
+    width: 100%;
+    justify-content: stretch;
+  }
+}

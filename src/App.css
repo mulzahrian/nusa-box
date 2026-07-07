@@ -1,0 +1,277 @@
+:root {
+  font-family: 'Press Start 2P', cursive;
+  color: #fff8dc;
+  background: linear-gradient(180deg, #09122b 0%, #132f57 50%, #1b4d2d 100%);
+  line-height: 1.5;
+  font-synthesis: none;
+  text-rendering: optimizeSpeed;
+  -webkit-font-smoothing: none;
+  -moz-osx-font-smoothing: grayscale;
+  --bg-panel: rgba(12, 24, 42, 0.92);
+  --accent: #ffca3a;
+  --accent-2: #2ec4b6;
+  --accent-3: #ff595e;
+  --ink: #102039;
+  --paper: #fff8dc;
+  --shadow: #06111f;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  min-height: 100%;
+  margin: 0;
+}
+
+body {
+  min-height: 100vh;
+  overflow: hidden;
+}
+
+button,
+input,
+select {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+.app-shell {
+  min-height: 100vh;
+  position: relative;
+}
+
+.pixel-panel,
+.pixel-card {
+  border: 4px solid var(--paper);
+  box-shadow: 8px 8px 0 var(--shadow);
+  background: var(--bg-panel);
+}
+
+.pixel-card {
+  padding: 12px;
+}
+
+.pixel-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  border: 4px solid var(--paper);
+  background: var(--accent);
+  color: var(--ink);
+  padding: 12px 16px;
+  text-transform: uppercase;
+  box-shadow: 6px 6px 0 var(--shadow);
+  transition: transform 0.12s ease, box-shadow 0.12s ease, filter 0.12s ease;
+}
+
+.pixel-button:hover:not(:disabled),
+.pixel-button:focus-visible:not(:disabled) {
+  transform: translate(2px, 2px);
+  box-shadow: 4px 4px 0 var(--shadow);
+  filter: brightness(1.04);
+}
+
+.pixel-button:disabled {
+  cursor: not-allowed;
+  filter: grayscale(1);
+  opacity: 0.55;
+}
+
+.pixel-button--secondary {
+  background: var(--accent-2);
+}
+
+.pixel-button--danger {
+  background: var(--accent-3);
+  color: var(--paper);
+}
+
+.pixel-button--ghost {
+  background: rgba(255, 248, 220, 0.12);
+  color: var(--paper);
+}
+
+.pixel-button--tiny {
+  padding: 8px 10px;
+  font-size: 10px;
+}
+
+.pixel-button__icon {
+  font-size: 16px;
+}
+
+.pixel-slider {
+  display: grid;
+  gap: 10px;
+}
+
+.pixel-slider__label {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: 12px;
+}
+
+.pixel-slider__input {
+  width: 100%;
+  margin: 0;
+  accent-color: var(--accent);
+}
+
+.resource-bar {
+  min-width: 132px;
+  display: grid;
+  gap: 6px;
+}
+
+.resource-bar__top {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  color: var(--paper);
+  font-size: 11px;
+}
+
+.resource-bar__track {
+  width: 100%;
+  height: 14px;
+  border: 3px solid var(--paper);
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.resource-bar__fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--accent), var(--accent-2));
+}
+
+.notification-stack {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 60;
+  display: grid;
+  gap: 12px;
+}
+
+.notification-toast {
+  min-width: 260px;
+  max-width: 340px;
+  padding: 14px;
+  border: 4px solid var(--paper);
+  background: rgba(12, 24, 42, 0.94);
+  color: var(--paper);
+  box-shadow: 8px 8px 0 var(--shadow);
+  display: grid;
+  gap: 8px;
+}
+
+.notification-toast[data-tone='success'] {
+  border-color: #b9ff8a;
+}
+
+.notification-toast__title {
+  color: var(--accent);
+  font-size: 11px;
+}
+
+.notification-toast__body {
+  font-size: 10px;
+}
+
+.gameplay-page {
+  position: relative;
+  min-height: 100vh;
+  overflow: hidden;
+}
+
+.gameplay-canvas {
+  position: absolute;
+  inset: 0;
+}
+
+.gameplay-overlays {
+  position: relative;
+  z-index: 3;
+  min-height: 100vh;
+  pointer-events: none;
+}
+
+.gameplay-overlays > * {
+  pointer-events: auto;
+}
+
+.gameplay-shortcuts {
+  position: absolute;
+  left: 20px;
+  bottom: 172px;
+  z-index: 4;
+  padding: 12px;
+  font-size: 10px;
+  color: var(--paper);
+}
+
+.gameplay-shortcuts p {
+  margin: 0 0 8px;
+  color: var(--accent);
+}
+
+.gameplay-shortcuts ul {
+  margin: 0;
+  padding-left: 18px;
+  display: grid;
+  gap: 6px;
+}
+
+.cutscene-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 9;
+  display: grid;
+  place-items: center;
+  background: rgba(0, 0, 0, 0.45);
+}
+
+.cutscene-card {
+  width: min(92vw, 720px);
+  padding: 24px;
+  display: grid;
+  gap: 16px;
+}
+
+.cutscene-card h2 {
+  margin: 0;
+  font-size: clamp(20px, 3vw, 28px);
+}
+
+.cutscene-card p {
+  margin: 0;
+  font-size: 12px;
+}
+
+@media (max-width: 960px) {
+  body {
+    overflow: auto;
+  }
+
+  .gameplay-shortcuts {
+    display: none;
+  }
+
+  .notification-stack {
+    left: 12px;
+    right: 12px;
+  }
+
+  .notification-toast {
+    min-width: 0;
+    max-width: none;
+  }
+}

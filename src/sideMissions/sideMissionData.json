@@ -1,0 +1,38 @@
+[
+  {
+    "id": "cleanup-forest-houses",
+    "title": "Rumah Kotor Pinggir Hutan",
+    "character": "Acel",
+    "conditions": { "afterLevel": 1 },
+    "objectives": [{ "type": "buildCount", "buildingId": "house", "target": 4 }],
+    "rewards": { "money": 250, "relationship": { "character": "acel", "amount": 5 } },
+    "cutscene": "sideMissionCleanup"
+  },
+  {
+    "id": "sunset-festival",
+    "title": "Festival Sore",
+    "character": "Amil",
+    "conditions": { "afterLevel": 2, "afterDate": 2 },
+    "objectives": [{ "type": "relationship", "character": "amil", "target": 15 }],
+    "rewards": { "money": 400, "relationship": { "character": "amil", "amount": 6 } },
+    "cutscene": "sideMissionFestival"
+  },
+  {
+    "id": "photo-op",
+    "title": "Foto Resmi Walikota",
+    "character": "The President",
+    "conditions": { "manualTrigger": true },
+    "objectives": [{ "type": "completeMiniGame", "miniGameId": "ExampleMiniGame", "target": 1 }],
+    "rewards": { "money": 550, "relationship": { "character": "president", "amount": 4 } },
+    "cutscene": "introSumatra"
+  },
+  {
+    "id": "ica-civic-drive",
+    "title": "Gerakan Bersih Ica",
+    "character": "Ica",
+    "conditions": { "afterLevel": 3, "afterRelationship": { "character": "ica", "value": 8 } },
+    "objectives": [{ "type": "population", "target": 28 }],
+    "rewards": { "money": 300, "relationship": { "character": "ica", "amount": 5 } },
+    "cutscene": "sumatraLevel4Start"
+  }
+]

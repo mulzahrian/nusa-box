@@ -1,0 +1,77 @@
+[
+  {
+    "id": "sumatra-1",
+    "map": "sumatra",
+    "levelNumber": 1,
+    "title": "Rumah Pertama",
+    "description": "Bangun 3 rumah dan capai 15 populasi.",
+    "objectives": [
+      { "type": "buildCount", "buildingId": "house", "target": 3, "current": 0 },
+      { "type": "population", "target": 15, "current": 0 }
+    ],
+    "rewards": { "money": 500, "unlocks": ["business"] },
+    "cutsceneStart": "sumatraLevel1Start",
+    "cutsceneEnd": "sumatraLevel1End",
+    "unlocksBuildings": ["woodHouse", "jalan-aspal"]
+  },
+  {
+    "id": "sumatra-2",
+    "map": "sumatra",
+    "levelNumber": 2,
+    "title": "Warung Hidup",
+    "description": "Bangun 1 bisnis dan kumpulkan 50.500 uang.",
+    "objectives": [
+      { "type": "buildCount", "buildingId": "factory", "target": 1, "current": 0 },
+      { "type": "money", "target": 50500, "current": 0 }
+    ],
+    "rewards": { "money": 850, "unlocks": ["market", "tax-panel"] },
+    "cutsceneStart": "sumatraLevel2Start",
+    "cutsceneEnd": "sumatraLevel1End",
+    "unlocksBuildings": ["smallFactory"]
+  },
+  {
+    "id": "sumatra-3",
+    "map": "sumatra",
+    "levelNumber": 3,
+    "title": "Pesisir Berkembang",
+    "description": "Capai 25 populasi dan miliki 53.000 uang.",
+    "objectives": [
+      { "type": "population", "target": 25, "current": 0 },
+      { "type": "money", "target": 53000, "current": 0 }
+    ],
+    "rewards": { "money": 1200, "unlocks": ["harbor"] },
+    "cutsceneStart": "sumatraLevel3Start",
+    "cutsceneEnd": "sumatraLevel1End",
+    "unlocksBuildings": ["smallPort"]
+  },
+  {
+    "id": "sumatra-4",
+    "map": "sumatra",
+    "levelNumber": 4,
+    "title": "Layanan Warga",
+    "description": "Capai 35 populasi dan hubungan 45 dengan Presiden.",
+    "objectives": [
+      { "type": "population", "target": 35, "current": 0 },
+      { "type": "relationship", "character": "president", "target": 45, "current": 0 }
+    ],
+    "rewards": { "money": 1600, "unlocks": ["school", "clinic"] },
+    "cutsceneStart": "sumatraLevel4Start",
+    "cutsceneEnd": "sumatraLevel1End",
+    "unlocksBuildings": ["schoolHall", "clinicHospital"]
+  },
+  {
+    "id": "sumatra-5",
+    "map": "sumatra",
+    "levelNumber": 5,
+    "title": "Gerbang Langit",
+    "description": "Selesaikan mini-game dan siapkan 57.000 uang.",
+    "objectives": [
+      { "type": "completeMiniGame", "miniGameId": "ExampleMiniGame", "target": 1, "current": 0 },
+      { "type": "money", "target": 57000, "current": 0 }
+    ],
+    "rewards": { "money": 2500, "unlocks": ["airport", "travel"] },
+    "cutsceneStart": "sumatraLevel5Start",
+    "cutsceneEnd": "sumatraLevel1End",
+    "unlocksBuildings": ["regionalAirport"]
+  }
+]

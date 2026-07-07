@@ -1,0 +1,96 @@
+.cutscene-system {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  display: flex;
+  align-items: stretch;
+  justify-content: center;
+  background: rgba(4, 8, 18, 0.78);
+}
+
+.cutscene-system__bg {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(180deg, rgba(10, 18, 34, 0.3), rgba(5, 8, 18, 0.88)),
+    radial-gradient(circle at top, rgba(89, 145, 255, 0.35), transparent 45%);
+  background-position: center;
+  background-size: cover;
+}
+
+.cutscene-system__stage {
+  position: relative;
+  width: min(100%, 1200px);
+  display: grid;
+  grid-template-rows: 1fr auto;
+  padding: 2rem;
+}
+
+.cutscene-system__character {
+  align-self: end;
+  width: min(28vw, 280px);
+  min-height: 320px;
+  border: 4px solid rgba(248, 245, 232, 0.9);
+  background: linear-gradient(180deg, rgba(255, 182, 80, 0.9), rgba(69, 40, 110, 0.94));
+  box-shadow: 12px 12px 0 rgba(0, 0, 0, 0.35);
+  display: grid;
+  place-items: center;
+  text-transform: uppercase;
+}
+
+.cutscene-system__character.left {
+  justify-self: start;
+}
+
+.cutscene-system__character.right {
+  justify-self: end;
+}
+
+.cutscene-system__character img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.cutscene-system__dialogue {
+  align-self: end;
+  border: 4px solid #f8f5e8;
+  background: rgba(10, 14, 30, 0.96);
+  box-shadow: 12px 12px 0 rgba(0, 0, 0, 0.32);
+  padding: 1.5rem;
+}
+
+.cutscene-system__dialogue h2 {
+  margin: 0 0 0.75rem;
+  color: #ffd166;
+  font-size: 1rem;
+}
+
+.cutscene-system__dialogue p {
+  margin: 0;
+  min-height: 5rem;
+}
+
+.cutscene-system__choices {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+
+.cutscene-system__hint {
+  margin-top: 1rem;
+  color: #8ecae6;
+  font-size: 0.8rem;
+}
+
+@media (max-width: 720px) {
+  .cutscene-system__stage {
+    padding: 1rem;
+  }
+
+  .cutscene-system__character {
+    width: 42vw;
+    min-height: 220px;
+  }
+}

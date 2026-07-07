@@ -1,0 +1,79 @@
+.main-menu {
+  min-height: 100vh;
+  position: relative;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+}
+
+.main-menu__backdrop {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(rgba(7, 19, 34, 0.25), rgba(7, 19, 34, 0.68)),
+    url('/img/bg/mainmenu.png'),
+    linear-gradient(135deg, #0b5d3d, #1d6fa3 45%, #fcbf49 100%);
+  background-position: center;
+  background-size: cover;
+}
+
+.main-menu__panel {
+  position: relative;
+  z-index: 1;
+  width: min(780px, 100%);
+  padding: 28px;
+  display: grid;
+  gap: 18px;
+}
+
+.main-menu__eyebrow,
+.main-menu__tagline,
+.main-menu__footer {
+  font-size: 11px;
+}
+
+.main-menu__panel h1 {
+  margin: 0;
+  font-size: clamp(36px, 8vw, 72px);
+  color: #ffca3a;
+  text-shadow: 6px 6px 0 #06111f;
+}
+
+.main-menu__tagline {
+  margin: 0;
+  max-width: 540px;
+  color: #d8e8ff;
+}
+
+.main-menu__actions {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+}
+
+.main-menu__actions .pixel-button {
+  width: 100%;
+  justify-content: flex-start;
+}
+
+.main-menu__footer {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: center;
+}
+
+@media (max-width: 720px) {
+  .main-menu {
+    padding: 12px;
+  }
+
+  .main-menu__panel {
+    padding: 18px;
+  }
+
+  .main-menu__footer {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}

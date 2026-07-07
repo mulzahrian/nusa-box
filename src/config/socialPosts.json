@@ -1,0 +1,20 @@
+[
+  {
+    "id": "post-1",
+    "author": "Warga Bukit Barisan",
+    "mood": "positif",
+    "text": "Taman baru bikin sore di kampung jadi adem. Anak-anak senang!"
+  },
+  {
+    "id": "post-2",
+    "author": "Forum Sopir Angkot",
+    "mood": "netral",
+    "text": "Kalau jalan utama diperlebar, trayek jadi lebih lancar nih."
+  },
+  {
+    "id": "post-3",
+    "author": "Relawan Hijau Sumatra",
+    "mood": "negatif",
+    "text": "Asap pabrik mulai terasa. Jangan lupa tanam pohon lagi, Pak Wali!"
+  }
+]
