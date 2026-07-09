@@ -1,31 +1,20 @@
-/**
- * Minigame registry
- * Each minigame is a self-contained module in this folder
- * To add a new minigame: create a new .js file and register it here
- * 
- * Minigame interface:
- * {
- *   id: string,
- *   name: string,
- *   description: string,
- *   start(container: HTMLElement): void,  // mount the minigame into DOM
- *   stop(): void,                          // cleanup
- *   onComplete: (callback) => void,        // call when player wins
- * }
- */
+import QuizGame from './QuizGame.js';
+import TapGame from './TapGame.js';
 
-import QuizGame from './QuizGame';
-
-const MINIGAMES = {
+export const MINIGAME_ENGINES = {
   quiz: QuizGame,
+  tap: TapGame,
 };
 
-export function getMinigame(id) {
-  return MINIGAMES[id] || null;
+export function launchMinigame(type, config, onWin, onClose) {
+  const engine = MINIGAME_ENGINES[type];
+  if (!engine) {
+    console.warn('[minigame] unknown type:', type);
+    return false;
+  }
+  engine.launch(config, onWin, onClose);
+  return true;
 }
 
-export function registerMinigame(id, gameModule) {
-  MINIGAMES[id] = gameModule;
-}
-
-export default MINIGAMES;
+export { QuizGame, TapGame };
+export default MINIGAME_ENGINES;

@@ -66,6 +66,19 @@
     "_enabled": true
   },
   {
+    "id": "fire_latihan",
+    "name": "Latihan Pemadam Api!",
+    "description": "Ikut latihan pemadaman kebakaran!",
+    "buildingTypes": ["fire"],
+    "trigger": {
+      "type": "random",
+      "chance": 0.4
+    },
+    "action": "minigame",
+    "minigameId": "tap_pemadam",
+    "_enabled": true
+  },
+  {
     "id": "bank_investasi",
     "name": "Tawaran Investasi",
     "description": "Bank menawarkan investasi menggiurkan.",

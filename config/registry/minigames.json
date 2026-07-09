@@ -50,7 +50,7 @@
       "targets": 10,
       "missAllowed": 3
     },
-    "_enabled": false
+    "_enabled": true
   },
   {
     "id": "puzzle_jalan",

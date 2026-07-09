@@ -18,8 +18,10 @@ import {
   mergeBuildings, getExtraVehiclesByType,
   getAvailableSideMissions, getBuildingEvent,
   getCheatEasterEgg, getDateEasterEgg, getMinigamesForBuilding,
-  REGISTRY_MINIGAMES,
+  REGISTRY_MINIGAMES, SEQUENCE_EASTER_EGGS, getTimeEasterEggs,
+  REGISTRY_ANIMALS, getAnimalsForZone, getAnimalById, CLICK_EASTER_EGGS,
 } from './src/systems/Registry.js';
+import { launchMinigame } from './src/minigames/index.js';
 
 // ==================== SETTINGS & LANGUAGE ====================
 const _DEF_SETTINGS = { lang: 'id', sound: true };
@@ -1595,6 +1597,51 @@ function loadCarModels(){
   }
 }
 
+const _registryVehicleLoads = new Set();
+
+// Load extra vehicles from JSON registry
+function loadRegistryVehicles() {
+  const extraCars = getExtraVehiclesByType('car');
+  const extraTaxis = getExtraVehiclesByType('taxi');
+  [...extraCars, ...extraTaxis].forEach(cfg => {
+    if (_registryVehicleLoads.has(cfg.id)) return;
+    if (cfg.requiresBuilding && !state.buildings.some(b => b.type === cfg.requiresBuilding)) return;
+    _registryVehicleLoads.add(cfg.id);
+    gltfLoader.load(cfg.path, (gltf) => {
+      const root = gltf.scene;
+      for (let pass = 0; pass < 2; pass++){
+        const box = new THREE.Box3().setFromObject(root);
+        const size = box.getSize(new THREE.Vector3());
+        const maxXZ = Math.max(size.x, size.z);
+        if (maxXZ < 0.001) break;
+        root.scale.multiplyScalar(0.88 / maxXZ);
+      }
+      const box2 = new THREE.Box3().setFromObject(root);
+      const center = box2.getCenter(new THREE.Vector3());
+      const rsx = root.scale.x || 1, rsy = root.scale.y || 1, rsz = root.scale.z || 1;
+      root.children.forEach(child => {
+        child.position.x -= center.x / rsx;
+        child.position.z -= center.z / rsz;
+        child.position.y -= box2.min.y / rsy;
+      });
+      root.position.set(0, 0, 0);
+      root.traverse(o => { if (o.isMesh){ o.castShadow = true; o.receiveShadow = true; }});
+      const corrector = new THREE.Group();
+      corrector.rotation.y = cfg.rotY || 0;
+      corrector.add(root);
+      const wrapper = new THREE.Group();
+      wrapper.add(corrector);
+      if (cfg.scale) wrapper.scale.setScalar(cfg.scale);
+      if (cfg.type === 'taxi') TAXI_TEMPLATES.push(wrapper);
+      else CAR_TEMPLATES.push(wrapper);
+      console.log(`[registry vehicle] loaded ${cfg.id}`);
+    }, undefined, err => {
+      _registryVehicleLoads.delete(cfg.id);
+      console.warn('[registry vehicle] failed', cfg.id, err);
+    });
+  });
+}
+
 function loadTaxiModels(){
   for (const entry of TAXI_PATHS){
     const { path, rotY } = entry;
@@ -1647,6 +1694,7 @@ const GLB_PENDING = new Map();
 loadTreeModels();
 loadCarModels();
 loadTaxiModels();
+loadRegistryVehicles();
 // Preload water animation model
 loadGLBTemplate('water_tile').catch(err => console.warn('Water animation model not loaded:', err));
 // decorative trees disabled -- trees placed manually in-game
@@ -4122,8 +4170,9 @@ function updateShips(dt){
 
 // Each deer is tracked; hunt tool removes them with a small money reward
 
-const DEER_COUNT_MAX  = 6;
-const DEER_MONEY_REWARD = 200;  // Rp reward per deer hunted
+const _deerAnimalCfg = getAnimalById('deer');
+const DEER_COUNT_MAX  = _deerAnimalCfg ? _deerAnimalCfg.countMax : 6;
+const DEER_MONEY_REWARD = _deerAnimalCfg ? (_deerAnimalCfg.moneyReward || 200) : 200;  // Rp reward per deer hunted
 let _deerGLB         = null;    // loaded template gltf (not added to scene)
 let _deerAnimations  = [];      // AnimationClip[] from GLB
 let _deerReady       = false;
@@ -4134,7 +4183,8 @@ gltfLoader.load('./model/animal/deer.glb', (gltf) => {
   // Normalize height to ~0.35 world unit (visible at city scale, ~half building height)
   const box0 = new THREE.Box3().setFromObject(root);
   const sz0  = box0.getSize(new THREE.Vector3());
-  if (sz0.y > 0.001) root.scale.multiplyScalar(0.35 / sz0.y);
+  const _deerScale = _deerAnimalCfg ? _deerAnimalCfg.scale : 0.35;
+  if (sz0.y > 0.001) root.scale.multiplyScalar(_deerScale / sz0.y);
 
   const box2 = new THREE.Box3().setFromObject(root);
   const c = box2.getCenter(new THREE.Vector3());
@@ -4286,6 +4336,93 @@ function updateDeers(dt){
     // Distance culling
     const camDx = d.wx - camTarget.x, camDz = d.wz - camTarget.z;
     d.mesh.visible = (camDx*camDx + camDz*camDz) <= 110*110;
+  }
+}
+
+// ── Registry Animal System ──────────────────────────────────────
+// Spawns non-deer animals defined in config/registry/animals.json
+const _registryAnimalInstances = {}; // { animalId: [{ mesh, mixer, wx, wz, dirAngle, speed, state, timer }] }
+
+function spawnRegistryAnimals() {
+  const forestAnimals  = getAnimalsForZone('forest').filter(a => a.id !== 'deer');
+  const desertAnimals  = getAnimalsForZone('desert');
+  const oceanAnimals   = getAnimalsForZone('ocean');
+  const cityAnimals    = getAnimalsForZone('city');
+
+  const spawnGroup = (animals, centerX, centerZ, spread) => {
+    for (const cfg of animals) {
+      if (!_registryAnimalInstances[cfg.id]) _registryAnimalInstances[cfg.id] = [];
+      const instances = _registryAnimalInstances[cfg.id];
+      const toSpawn = Math.max(0, (cfg.countMax || 3) - instances.length);
+      for (let i = 0; i < toSpawn; i++) {
+        const angle = Math.random() * Math.PI * 2;
+        const dist  = Math.random() * spread;
+        const wx = Math.max(-HALF + 2, Math.min(HALF - 2, centerX + Math.cos(angle) * dist));
+        const wz = Math.max(-HALF + 2, Math.min(HALF - 2, centerZ + Math.sin(angle) * dist));
+        const wy = TERRAIN.getHeightAt(wx, wz);
+        const g = new THREE.Group();
+        const scale = cfg.scale || 0.3;
+        const body = new THREE.Mesh(
+          new THREE.BoxGeometry(scale * 1.2, scale, scale * 0.7),
+          new THREE.MeshLambertMaterial({ color: 0x8B6914 })
+        );
+        body.position.y = scale * 0.5;
+        body.castShadow = true;
+        const head = new THREE.Mesh(
+          new THREE.BoxGeometry(scale * 0.5, scale * 0.5, scale * 0.5),
+          new THREE.MeshLambertMaterial({ color: 0x7a5500 })
+        );
+        head.position.set(scale * 0.6, scale * 0.9, 0);
+        head.castShadow = true;
+        g.add(body, head);
+        g.position.set(wx, wy, wz);
+        g.rotation.y = Math.random() * Math.PI * 2;
+        scene.add(g);
+        instances.push({
+          mesh: g, cfg,
+          wx, wz,
+          dirAngle: Math.random() * Math.PI * 2,
+          speed: 1.0 + Math.random() * 1.5,
+          state: 'idle',
+          timer: 2 + Math.random() * 5,
+        });
+      }
+    }
+  };
+
+  if (_forestCenter && forestAnimals.length) {
+    spawnGroup(forestAnimals, _forestCenter.x, _forestCenter.z, FOREST_ZONE_SIZE);
+  }
+  if (state._desertZone && desertAnimals.length) {
+    spawnGroup(desertAnimals, state._desertZone.cx, state._desertZone.cz, state._desertZone.radius * 0.8);
+  }
+  if (oceanAnimals.length) {
+    spawnGroup(oceanAnimals, 0, HALF * 0.78, HALF * 0.22);
+  }
+  if (cityAnimals.length) {
+    spawnGroup(cityAnimals, 0, 0, HALF * 0.4);
+  }
+}
+
+function updateRegistryAnimals(dt) {
+  for (const instances of Object.values(_registryAnimalInstances)) {
+    for (let i = instances.length - 1; i >= 0; i--) {
+      const a = instances[i];
+      a.timer -= dt;
+      if (a.timer <= 0) {
+        a.state = a.state === 'walk' ? 'idle' : 'walk';
+        a.timer = a.state === 'idle' ? (2 + Math.random() * 5) : (3 + Math.random() * 6);
+        a.dirAngle = Math.random() * Math.PI * 2;
+      }
+      if (a.state === 'walk') {
+        a.wx = Math.max(-HALF + 1, Math.min(HALF - 1, a.wx + Math.cos(a.dirAngle) * a.speed * dt));
+        a.wz = Math.max(-HALF + 1, Math.min(HALF - 1, a.wz + Math.sin(a.dirAngle) * a.speed * dt));
+        a.mesh.position.set(a.wx, TERRAIN.getHeightAt(a.wx, a.wz), a.wz);
+        a.mesh.rotation.y = -a.dirAngle + Math.PI / 2;
+      }
+      const camDx = a.wx - camTarget.x, camDz = a.wz - camTarget.z;
+      a.mesh.visible = (camDx * camDx + camDz * camDz) <= 110 * 110;
+    }
   }
 }
 
@@ -6153,6 +6290,8 @@ function recalcStats(){
   state.pollution = pollution + getSlumPollution();
   state._happyBonus = happyBonus;
   state._taxBase = tax;
+  loadRegistryVehicles();
+  _tickSideMissionProgress();
 }
 
 // -------------------- DISTANCE CULLING --------------------
@@ -6238,6 +6377,20 @@ function updateDistanceCulling(){
   }
 }
 
+let _timeEggLastState = '';
+function _tickTimeEasterEggs() {
+  const tod = DN.isNight ? 'night' : 'day';
+  if (tod === _timeEggLastState) return;
+  _timeEggLastState = tod;
+  const eggs = getTimeEasterEggs(tod);
+  for (const egg of eggs) {
+    const chance = egg.trigger?.chance ?? 1.0;
+    if (Math.random() < chance) {
+      _executeEasterEgg(egg);
+    }
+  }
+}
+
 function gameTick(dt){
   if (state.paused || state.speed===0) return;
   const mult = state.speed;
@@ -6250,6 +6403,8 @@ function gameTick(dt){
   tickSlums(dt, mult);
   //ufo
   tickUFOMidnight();
+  // Time-based easter eggs from JSON registry
+  _tickTimeEasterEggs();
   updateUFO(dt * mult);
   updateGhostEasterEgg(dt * mult);
 
@@ -6581,6 +6736,7 @@ canvas.addEventListener('dblclick', e=>{
         });
         return;
       }
+      _trackBuildingClick(cell.type);
       showInsideBuilding(cell.type);
     }
   }
@@ -7172,37 +7328,139 @@ function showInsideBuilding(buildingType){
   };
   const imgPath = interiorMap[buildingType] || './img/insideBuilding/home_example.png';
   const bName = BUILDINGS[buildingType]?.name || buildingType;
-  if (registryEvent) { _applyRegistryBuildingEvent(registryEvent, bName, imgPath); return; }
-  _showInsideBuildingView(bName, imgPath);
+  const availableMinigames = getMinigamesForBuilding(buildingType);
+
+  if (registryEvent) {
+    _applyRegistryBuildingEvent(registryEvent, bName, imgPath, availableMinigames);
+    return;
+  }
+
+  _showInsideBuildingView(bName, imgPath, availableMinigames);
 }
 
-function _applyRegistryBuildingEvent(ev, bName, imgPath) {
-  if (ev.reward?.money)     { state.money += ev.reward.money; renderHUD(); }
-  if (ev.reward?.happiness) { state.happiness = Math.min(100, state.happiness + ev.reward.happiness); }
+function _showEventDialog(title, line, character, onNext) {
+  document.getElementById('event-dialog-overlay')?.remove();
+  const charEmoji = {
+    pak_wiwi: '👨‍💼',
+    amil: '👩‍⚕️',
+    the_president: '🎩',
+    acel: '👷',
+  }[character] || '💬';
+
+  const ov = document.createElement('div');
+  ov.id = 'event-dialog-overlay';
+  ov.style.cssText = 'position:absolute;bottom:80px;left:50%;transform:translateX(-50%);width:480px;max-width:90vw;background:#0d0d1a;border:3px solid #8844ff;box-shadow:0 0 30px #8844ff44;z-index:70;font-family:monospace;padding:16px;display:flex;gap:12px;align-items:flex-start;';
+  ov.innerHTML = `
+    <div style="font-size:32px;flex-shrink:0;">${charEmoji}</div>
+    <div style="flex:1;">
+      <div style="color:#8844ff;font-size:10px;margin-bottom:6px;">${title}</div>
+      <div style="color:#fff;font-size:12px;line-height:1.5;" id="event-dialog-text"></div>
+      <button id="event-dialog-next" style="margin-top:10px;padding:6px 16px;background:#2a0066;border:2px solid #8844ff;color:#cc88ff;cursor:pointer;font-size:10px;">Lanjut ▶</button>
+    </div>`;
+
+  const textEl = ov.querySelector('#event-dialog-text');
+  let charIdx = 0;
+  const typeInterval = setInterval(() => {
+    if (charIdx < line.length) {
+      textEl.textContent += line[charIdx++];
+    } else {
+      clearInterval(typeInterval);
+    }
+  }, 25);
+
+  ov.querySelector('#event-dialog-next').onclick = () => {
+    clearInterval(typeInterval);
+    ov.remove();
+    if (onNext) onNext();
+  };
+
+  setTimeout(() => {
+    if (document.getElementById('event-dialog-overlay') === ov) {
+      ov.remove();
+      if (onNext) onNext();
+    }
+  }, 8000);
+
+  document.getElementById('ui-root').appendChild(ov);
+}
+
+function _showEventRewardResult(ev, bName, imgPath, availableMinigames) {
+  const rewards = [];
+  if (ev.reward?.money) rewards.push(`💰 +Rp ${ev.reward.money.toLocaleString()}`);
+  if (ev.reward?.happiness) rewards.push(`😊 +${ev.reward.happiness}% kebahagiaan`);
+  const rewardLine = rewards.length ? rewards.join('   ') : 'Event selesai!';
+  _showEventDialog(ev.name || 'Reward', rewardLine, ev.character, () => {
+    _showInsideBuildingView(bName, imgPath, availableMinigames);
+  });
+}
+
+function _applyRegistryBuildingEvent(ev, bName, imgPath, availableMinigames) {
+  const applyReward = () => {
+    if (ev.reward?.money && ev.reward.money > 0) {
+      state.money += ev.reward.money;
+      renderHUD();
+      notify('💰 Reward', `+Rp ${ev.reward.money.toLocaleString()}`, 'success');
+    }
+    if (ev.reward?.happiness && ev.reward.happiness > 0) {
+      state.happiness = Math.min(100, state.happiness + ev.reward.happiness);
+      notify('😊 Kebahagiaan Naik', `+${ev.reward.happiness}%`, 'success');
+    }
+    if (ev.reward?.relationship) {
+      changeRelationship(ev.reward.relationship.charId, ev.reward.relationship.amount || 0);
+    }
+  };
+
   if (ev.dialog?.length) {
     let di = 0;
     const nextLine = () => {
       if (di >= ev.dialog.length) {
+        applyReward();
         if (ev.action === 'minigame' && ev.minigameId) _launchRegistryMinigame(ev.minigameId);
-        else _showInsideBuildingView(bName, imgPath);
+        else if (ev.action === 'reward') _showEventRewardResult(ev, bName, imgPath, availableMinigames);
+        else _showInsideBuildingView(bName, imgPath, availableMinigames);
         return;
       }
-      notify('📢 ' + (ev.name || 'Event'), ev.dialog[di++], 'info');
-      setTimeout(nextLine, 1800);
+      _showEventDialog(ev.name || 'Event', ev.dialog[di++], ev.character, nextLine);
     };
     nextLine();
   } else if (ev.action === 'minigame' && ev.minigameId) {
+    applyReward();
     _launchRegistryMinigame(ev.minigameId);
+  } else if (ev.action === 'reward') {
+    applyReward();
+    _showEventRewardResult(ev, bName, imgPath, availableMinigames);
   } else {
-    _showInsideBuildingView(bName, imgPath);
+    applyReward();
+    _showInsideBuildingView(bName, imgPath, availableMinigames);
   }
 }
 
 function _launchRegistryMinigame(minigameId) {
   const mg = REGISTRY_MINIGAMES.find(m => m.id === minigameId);
   if (!mg) { notify('Mini Game', 'Tidak ditemukan: ' + minigameId, 'warn'); return; }
-  if (mg.type === 'quiz') _launchQuizMinigame(mg);
-  else notify('Mini Game', mg.name + ' (coming soon)', 'info');
+
+  const config = {
+    name: mg.name,
+    questions: mg.questions || [],
+    rewardMoney: mg.rewardMoney || 0,
+    rewardHappiness: mg.rewardHappiness || 0,
+    timeLimit: mg.timeLimit || 30,
+    targets: mg.config?.targets || 8,
+    missAllowed: mg.config?.missAllowed || 3,
+  };
+
+  const onWin = (result) => {
+    state.money += result.rewardMoney || 0;
+    state.happiness = Math.min(100, state.happiness + (result.rewardHappiness || 0));
+    renderHUD();
+    notify('🎉 ' + mg.name, `Menang! +Rp ${(result.rewardMoney || 0).toLocaleString()}`, 'success');
+  };
+
+  const launched = launchMinigame(mg.type, config, onWin, null);
+  if (!launched) {
+    if (mg.type === 'quiz') _launchQuizMinigame(mg);
+    else notify('Mini Game', mg.name + ' (tipe belum tersedia: ' + mg.type + ')', 'info');
+  }
 }
 
 function _launchQuizMinigame(mg) {
@@ -7240,12 +7498,115 @@ function _launchQuizMinigame(mg) {
   showQ();
 }
 
-function _showInsideBuildingView(bName, imgPath) {
+// Execute easter egg effect from JSON registry
+function _executeEasterEgg(egg) {
+  if (!egg || !egg.effect) return;
+  const ef = egg.effect;
+  if (ef.message) notify('🎉 Easter Egg', ef.message, 'success');
+  switch (ef.type) {
+    case 'spawn': {
+      const count = Math.max(1, ef.count || 1);
+      if (ef.spawnType === 'ufo') {
+        for (let i = 0; i < count; i++) spawnUFO();
+      } else if (ef.spawnType === 'deer') {
+        for (let i = 0; i < count; i++) spawnDeer();
+      } else if (ef.spawnType === 'ghost') {
+        for (let i = 0; i < count; i++) spawnGhostEasterEgg();
+      }
+      break;
+    }
+    case 'money':
+      state.money += (ef.amount || 0);
+      renderHUD();
+      break;
+    case 'dialog':
+      if (ef.lines && ef.lines.length) {
+        let di = 0;
+        const next = () => {
+          if (di < ef.lines.length) {
+            notify('💬 ' + (ef.character || egg.name || 'Event'), ef.lines[di++], 'info');
+            setTimeout(next, 2000);
+          }
+        };
+        next();
+      }
+      break;
+    case 'fireworks':
+      if (ef.message) notify('🎆 Event', ef.message, 'success');
+      if (ef.dialog && ef.dialog.lines) {
+        let di = 0;
+        const next = () => {
+          if (di < ef.dialog.lines.length) {
+            notify('💬 ' + (ef.dialog.character || ''), ef.dialog.lines[di++], 'info');
+            setTimeout(next, 2000);
+          }
+        };
+        setTimeout(next, 500);
+      }
+      break;
+    default:
+      notify('🎉 Easter Egg', egg.name, 'success');
+  }
+}
+
+const _clickTrack = {};
+
+function _trackBuildingClick(buildingType) {
+  if (!CLICK_EASTER_EGGS.length) return;
+  const now = Date.now();
+  for (const egg of CLICK_EASTER_EGGS) {
+    const bt = egg.trigger?.buildingType || 'any';
+    if (bt !== 'any' && bt !== buildingType) continue;
+    if (!_clickTrack[bt]) _clickTrack[bt] = { count: 0, firstT: now };
+    const e = _clickTrack[bt];
+    e.count++;
+    if (e.count === 1) e.firstT = now;
+    const elapsed = (now - e.firstT) / 1000;
+    const within = egg.trigger?.withinSeconds || 10;
+    if (elapsed > within) {
+      e.count = 1;
+      e.firstT = now;
+      continue;
+    }
+    if (e.count >= (egg.trigger?.times || 5)) {
+      e.count = 0;
+      _executeEasterEgg(egg);
+    }
+  }
+}
+
+function _showInsideBuildingView(bName, imgPath, availableMinigames) {
+  document.getElementById('inside-building-overlay')?.remove();
   const overlay = document.createElement('div');
   overlay.id = 'inside-building-overlay';
-  overlay.style.cssText = 'position:absolute;inset:0;background:rgba(0,0,0,.85);display:flex;align-items:center;justify-content:center;z-index:55;cursor:pointer;';
-  overlay.innerHTML = '<div style="max-width:80vw;max-height:80vh;text-align:center;"><div style="font-family:var(--font);font-size:9px;color:var(--cyan);margin-bottom:10px;text-shadow:2px 2px 0 #000;">' + bName + ' - Interior</div><div style="width:600px;max-width:80vw;height:400px;max-height:60vh;background:#111;border:3px solid var(--purple);box-shadow:6px 6px 0 #000;overflow:hidden;display:flex;align-items:center;justify-content:center;"><img src="' + imgPath + '" style="max-width:100%;max-height:100%;object-fit:contain;image-rendering:pixelated;"/></div><div style="font-family:var(--font);font-size:6px;color:#5544aa;margin-top:8px;">Click di mana saja untuk menutup</div></div>';
-  overlay.onclick = () => overlay.remove();
+  overlay.style.cssText = 'position:absolute;inset:0;background:rgba(0,0,0,.88);display:flex;align-items:center;justify-content:center;z-index:55;';
+
+  const mgButtons = (availableMinigames && availableMinigames.length)
+    ? availableMinigames.map(mg => `<button class="mg-btn" data-mgid="${mg.id}" style="font-family:monospace;font-size:11px;padding:8px 16px;background:#1a0033;border:2px solid #aa44ff;color:#cc88ff;cursor:pointer;margin:4px;">🎮 ${mg.name}</button>`).join('')
+    : '';
+
+  overlay.innerHTML = `
+    <div style="max-width:80vw;max-height:90vh;text-align:center;display:flex;flex-direction:column;align-items:center;gap:10px;">
+      <div style="font-family:monospace;font-size:13px;color:#00ccff;text-shadow:2px 2px 0 #000;">${bName}</div>
+      <div style="width:560px;max-width:80vw;height:360px;max-height:55vh;background:#111;border:3px solid #4400aa;box-shadow:6px 6px 0 #000;overflow:hidden;display:flex;align-items:center;justify-content:center;">
+        <img src="${imgPath}" style="max-width:100%;max-height:100%;object-fit:contain;" onerror="this.style.display='none'"/>
+      </div>
+      ${mgButtons ? `<div style="display:flex;flex-wrap:wrap;justify-content:center;gap:6px;">${mgButtons}</div>` : ''}
+      <div style="font-family:monospace;font-size:10px;color:#555;">Klik di luar area untuk menutup</div>
+    </div>`;
+
+  overlay.addEventListener('click', (e) => {
+    if (e.target === overlay) overlay.remove();
+  });
+
+  overlay.querySelectorAll('.mg-btn').forEach(btn => {
+    btn.onclick = (e) => {
+      e.stopPropagation();
+      overlay.remove();
+      _launchRegistryMinigame(btn.dataset.mgid);
+    };
+  });
+
   document.getElementById('ui-root').appendChild(overlay);
 }
 
@@ -7273,8 +7634,7 @@ function checkCalendarEvents(){
   const todayEvents = state.calendarEvents.filter(e => e.day === state.day && e.month === state.month);
   todayEvents.forEach(ev => {
     if(ev.type === 'side_mission' && ev.missionId){
-      notify('ðŸ“… Event Hari Ini', ev.title, 'warn');
-      // Add email notification
+      notify('📅 Event Hari Ini', ev.title, 'warn');
       state.phone.emails.unshift({
         id: 'cal_' + Date.now(),
         from: 'Sistem Kalender',
@@ -7285,6 +7645,110 @@ function checkCalendarEvents(){
       });
     }
   });
+
+  // Check JSON registry date easter eggs
+  const dateEgg = getDateEasterEgg(state.month, state.day);
+  if (dateEgg) {
+    setTimeout(() => _executeEasterEgg(dateEgg), 2000);
+  }
+
+  // Check JSON registry side missions that can activate today
+  _checkRegistrySideMissions();
+  renderSideMissionPanel();
+}
+
+// Check and activate any side missions from registry that are now available
+function _checkRegistrySideMissions() {
+  const available = getAvailableSideMissions(state);
+  if (!available.length) return;
+  const mission = available[0];
+  if (!state.activeSideMissions) state.activeSideMissions = [];
+  state.activeSideMissions.push({
+    id: mission.id,
+    name: mission.name,
+    objectives: mission.objectives,
+    reward: mission.reward,
+    startDay: state.day,
+    timeLimit: mission.timeLimit || null,
+    progress: {},
+  });
+  renderSideMissionPanel();
+  if (mission.cutscene?.lines?.length) {
+    let di = 0;
+    const next = () => {
+      if (di < mission.cutscene.lines.length) {
+        notify('📋 ' + (mission.name || 'Side Mission'), mission.cutscene.lines[di++], 'warn');
+        setTimeout(next, 2500);
+      }
+    };
+    next();
+  } else {
+    notify('📋 Side Mission Baru!', mission.name + ' — ' + (mission.description || ''), 'warn');
+  }
+}
+
+function _tickSideMissionProgress() {
+  if (!state.activeSideMissions?.length) return;
+  for (let i = state.activeSideMissions.length - 1; i >= 0; i--) {
+    const sm = state.activeSideMissions[i];
+    if (!sm.objectives?.length) continue;
+    const allDone = sm.objectives.every(obj => _checkSideMissionObjective(obj));
+    if (allDone) {
+      state.activeSideMissions.splice(i, 1);
+      if (!state.completedSideMissions) state.completedSideMissions = [];
+      state.completedSideMissions.push(sm.id);
+      if (sm.reward?.money)     { state.money += sm.reward.money; }
+      if (sm.reward?.happiness) { state.happiness = Math.min(100, state.happiness + sm.reward.happiness); }
+      if (sm.reward?.relationship) {
+        changeRelationship(sm.reward.relationship.charId, sm.reward.relationship.amount || 0);
+      }
+      renderHUD();
+      notify('🎉 Side Mission Selesai!', `${sm.name} — +Rp ${(sm.reward?.money || 0).toLocaleString()}`, 'success');
+      renderSideMissionPanel();
+    }
+  }
+  renderSideMissionPanel();
+}
+
+function renderSideMissionPanel() {
+  document.getElementById('side-mission-panel')?.remove();
+  if (!state.activeSideMissions?.length) return;
+
+  const panel = document.createElement('div');
+  panel.id = 'side-mission-panel';
+  panel.style.cssText = 'position:absolute;top:60px;right:10px;width:200px;background:rgba(10,5,25,0.92);border:2px solid #aa44ff;font-family:monospace;z-index:40;padding:8px;';
+
+  const items = state.activeSideMissions.map(sm => {
+    const objLines = (sm.objectives || []).map(obj => {
+      const done = _checkSideMissionObjective(obj);
+      return `<div style="font-size:9px;color:${done ? '#00ff88' : '#aaa'};margin-top:3px;">${done ? '✅' : '⬜'} ${obj.label || obj.type}</div>`;
+    }).join('');
+    return `
+      <div style="margin-bottom:8px;padding-bottom:8px;border-bottom:1px solid #4a2a6a;">
+        <div style="color:#cc88ff;font-size:10px;">📋 ${sm.name}</div>
+        ${objLines}
+        ${sm.reward?.money ? `<div style="font-size:9px;color:#ffcc00;margin-top:3px;">🏆 Rp ${sm.reward.money.toLocaleString()}</div>` : ''}
+      </div>`;
+  }).join('');
+
+  panel.innerHTML = `<div style="color:#8844ff;font-size:10px;margin-bottom:6px;border-bottom:1px solid #4a2a6a;padding-bottom:4px;">📋 SIDE MISSIONS</div>${items}`;
+  document.getElementById('ui-root').appendChild(panel);
+}
+
+function _checkSideMissionObjective(obj) {
+  switch (obj.type) {
+    case 'btype':
+      return state.buildings.filter(b => b.type === obj.btype).length >= (obj.min || 1);
+    case 'btypes':
+      return state.buildings.filter(b => obj.btypes.includes(b.type)).length >= (obj.min || 1);
+    case 'population':
+      return state.population >= (obj.min || 0);
+    case 'happiness':
+      return state.happiness >= (obj.min || 0);
+    case 'money':
+      return state.money >= (obj.min || 0);
+    default: return false;
+  }
 }
 
 // ==================== RELATIONSHIP HELPERS ====================
@@ -8239,7 +8703,11 @@ function startGame(sandbox, loaded=false){
       setTimeout(() => { if (_shipGlbLoaded >= SHIP_MODELS.length) spawnShips(); }, 200);
     }, 100);
     // Spawn deer near forest after trees settle
-    setTimeout(() => { if (_deerReady) spawnDeer(); else setTimeout(() => spawnDeer(), 2000); }, 800);
+    setTimeout(() => {
+      if (_deerReady) spawnDeer();
+      else setTimeout(() => spawnDeer(), 2000);
+      setTimeout(() => { if (state.running) spawnRegistryAnimals(); }, 1200);
+    }, 800);
   }, 300);
 
   // Switch to gameplay music
@@ -8546,6 +9014,16 @@ function buildHUD(){
       }
       cheatFeedback(`ðŸ¦Œ ${spawned} rusa muncul di kota!`, 'success');
     },
+    'main quiz': () => {
+      const mg = REGISTRY_MINIGAMES.find(m => m.type === 'quiz' && m._enabled !== false);
+      if (mg) { cheatFeedback('🎮 Launching quiz...', 'success'); setTimeout(() => _launchRegistryMinigame(mg.id), 300); }
+      else cheatFeedback('❌ No quiz minigame found', 'error');
+    },
+    'main tap': () => {
+      const mg = REGISTRY_MINIGAMES.find(m => m.type === 'tap' && m._enabled !== false);
+      if (mg) { cheatFeedback('🎮 Launching tap game...', 'success'); setTimeout(() => _launchRegistryMinigame(mg.id), 300); }
+      else cheatFeedback('❌ No tap minigame found', 'error');
+    },
     'bahagia': () => {
       state.happiness = 100;
       renderTopBar();
@@ -8641,10 +9119,35 @@ function buildHUD(){
       if (CHEATS[code]){
         CHEATS[code]();
       } else {
-        cheatFeedback('âŒ Unknown cheat code', 'error');
-        Audio.playError();
+        const egg = getCheatEasterEgg(code);
+        if (egg) {
+          _executeEasterEgg(egg);
+        } else {
+          cheatFeedback('❌ Unknown cheat code', 'error');
+          Audio.playError();
+        }
       }
       cheatInput.value = '';
+    }
+  });
+
+  // Konami & sequence easter eggs
+  let _seqBuffer = [];
+  document.addEventListener('keydown', (e) => {
+    if (document.activeElement === cheatInput) return;
+    _seqBuffer.push(e.key);
+    if (_seqBuffer.length > 15) _seqBuffer.shift();
+    for (const seq of SEQUENCE_EASTER_EGGS) {
+      if (!seq.trigger?.keys?.length) continue;
+      const keys = seq.trigger.keys;
+      if (_seqBuffer.length >= keys.length) {
+        const tail = _seqBuffer.slice(-keys.length);
+        if (tail.every((k, i) => k === keys[i])) {
+          _seqBuffer = [];
+          _executeEasterEgg(seq);
+          break;
+        }
+      }
     }
   });
 }
@@ -9053,6 +9556,7 @@ function loop(now){
   updateWaterAnimation(dt);
   updateWaterMixers(dt);
   if (state.running) updateDeers(dt);
+  if (state.running) updateRegistryAnimals(dt);
   if (state.running) updateShips(dt);
   updateBeachWaves(dt);
 
@@ -9082,5 +9586,3 @@ initRainParticles();
 // pre-warm GLB cache
 Object.keys(GLB_MODELS).forEach(k => loadGLBTemplate(k).catch(()=>{}));
 requestAnimationFrame(loop);
-
-

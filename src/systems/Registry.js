@@ -21,6 +21,7 @@ import MINIGAME_REGISTRY   from '../../config/registry/minigames.json'     asser
 import SIDEMISSION_REGISTRY from '../../config/registry/sideMissions.json' assert { type: 'json' };
 import BUILDINGEVENT_REGISTRY from '../../config/registry/buildingEvents.json' assert { type: 'json' };
 import EASTEREGG_REGISTRY  from '../../config/registry/easterEggs.json'   assert { type: 'json' };
+import ANIMAL_REGISTRY     from '../../config/registry/animals.json'      assert { type: 'json' };
 
 // Filter hanya yang _enabled !== false (default: enabled)
 const active = arr => arr.filter(x => !x._comment && !x._comment2 && !x._comment3
@@ -154,6 +155,9 @@ export const DATE_EASTER_EGGS = REGISTRY_EASTER_EGGS.filter(e => e.type === 'dat
 /** Easter eggs yang trigger by keyboard sequence */
 export const SEQUENCE_EASTER_EGGS = REGISTRY_EASTER_EGGS.filter(e => e.type === 'sequence');
 
+/** Easter eggs yang trigger by click */
+export const CLICK_EASTER_EGGS = REGISTRY_EASTER_EGGS.filter(e => e.type === 'click');
+
 /** Easter eggs yang trigger by time of day */
 export const TIME_EASTER_EGGS = REGISTRY_EASTER_EGGS.filter(e => e.type === 'time');
 
@@ -180,4 +184,21 @@ export function getTimeEasterEggs(timeOfDay) {
  */
 export function getCheatEasterEgg(keyword) {
   return CHEAT_EASTER_EGGS[keyword.toLowerCase().trim()] || null;
+}
+
+// ── Animals ───────────────────────────────────────────────────
+/** Semua hewan dari config (yang enabled) */
+export const REGISTRY_ANIMALS = active(ANIMAL_REGISTRY);
+
+/**
+ * Ambil hewan berdasarkan biome/zone type
+ * @param {string} zoneType - 'forest' | 'desert' | 'ocean' | 'city'
+ */
+export function getAnimalsForZone(zoneType) {
+  return REGISTRY_ANIMALS.filter(a => a.type === zoneType);
+}
+
+/** Ambil config satu hewan by id */
+export function getAnimalById(id) {
+  return REGISTRY_ANIMALS.find(a => a.id === id) || null;
 }
